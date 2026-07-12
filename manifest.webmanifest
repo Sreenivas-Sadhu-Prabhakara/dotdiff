@@ -1,0 +1,36 @@
+{
+  "name": "dotdiff — env file diff & dotenv validator",
+  "short_name": "dotdiff",
+  "description": "Compare two .env / config files in your browser and validate them for drift, duplicates and missing keys. 100% client-side.",
+  "start_url": "/dotdiff/",
+  "scope": "/dotdiff/",
+  "display": "standalone",
+  "theme_color": "#14181f",
+  "background_color": "#14181f",
+  "icons": [
+    {
+      "src": "/dotdiff/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/dotdiff/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/dotdiff/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/dotdiff/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
