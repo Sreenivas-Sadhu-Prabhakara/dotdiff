@@ -6,10 +6,69 @@ import '../styles/app.css';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
 const site = 'https://sreenivas-sadhu-prabhakara.github.io';
 const canonical = `${site}${base}`;
+const ogImage = `${canonical}og.png`;
 
-const title = 'dotdiff — env file diff & dotenv validator';
+// ~55-char title and ~150-char description tuned for real long-tail demand
+// ("compare .env files", "dotenv diff", "find missing env variables").
+const title = 'dotdiff — compare .env files & dotenv validator';
 const description =
-  'Compare two .env / config files in your browser. Normalize-then-compare ignores key order, whitespace, quotes and comments so you see only the real differences — plus a validator that flags drift, duplicate keys, empty values and missing required variables. 100% client-side; nothing leaves your device.';
+  'Compare two .env files online and see the real differences — key order, whitespace and comments ignored. Finds missing, changed and duplicate keys. Private, in-browser.';
+
+// Long-tail FAQs: real questions people search when diffing env files.
+const faqs = [
+  {
+    q: 'How do I compare two .env files?',
+    a: 'Paste one file into panel A and the other into panel B. dotdiff normalizes both — ignoring key order, whitespace, quotes and comments — then shows only the keys that are added, removed or changed between them.',
+  },
+  {
+    q: 'Is dotdiff safe for secrets and API keys?',
+    a: 'Yes. Everything runs in your browser and a strict Content-Security-Policy with connect-src ’none’ means the page cannot make any network request. Nothing you paste ever leaves your device. A "mask values" toggle also hides secret values in the report.',
+  },
+  {
+    q: 'How can I find environment variables missing from one file?',
+    a: 'The diff lists keys that exist only in A or only in B, so a variable present in production but absent in staging is flagged immediately. You can also list required keys to have dotdiff warn when either file is missing them.',
+  },
+  {
+    q: 'Does dotdiff catch duplicate keys and empty values?',
+    a: 'Yes. The built-in health check flags duplicate keys within a file, empty or unset values, and values whose type appears to have drifted (for example a port number that changed to text) — the kinds of mistakes that break a deploy.',
+  },
+  {
+    q: 'Do I need to install or sign up for anything?',
+    a: 'No. dotdiff is a single static page with no account, no upload and no server. Open it and paste — it works offline once loaded.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebApplication',
+      name: 'dotdiff',
+      url: canonical,
+      description,
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'Any (web browser)',
+      browserRequirements: 'Requires JavaScript',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      isAccessibleForFree: true,
+      featureList: [
+        'Compare two .env / config files',
+        'Ignore key order, whitespace, quotes and comments',
+        'Detect drift, duplicate keys and empty values',
+        'Flag missing required environment variables',
+        '100% client-side — nothing leaves the device',
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
 ---
 
 <html lang="en">
@@ -33,20 +92,28 @@ const description =
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#14181f" />
 <link rel="canonical" href={canonical} />
-<link
-  rel="icon"
-  href={`${base}favicon.svg`}
-  type="image/svg+xml"
-/>
+<link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+<link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
+<link rel="manifest" href={`${base}manifest.webmanifest`} />
 
-<!-- Open Graph / social (text-only; OG image is a later stage) -->
+<!-- Open Graph / social -->
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="dotdiff" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-<meta name="twitter:card" content="summary" />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="dotdiff comparing two .env files side by side, showing added, removed and changed keys" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Structured data: WebApplication + FAQPage (application/ld+json is not
+     executable JS, so it is exempt from script-src 'self' — CSP stays clean). -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </head>
 <body>
 
@@ -206,6 +273,11 @@ const description =
       dotdiff is a <b>.env / config diff &amp; validator</b>: compare .env files,
       find missing environment variables, and catch drift between environments —
       all offline.
+    </p>
+    <p class="foot-legal">
+      MIT-licensed and provided <b>as is</b>, without warranty of any kind. You
+      are responsible for verifying results before acting on them; the author is
+      not liable for any loss arising from its use.
     </p>
   </footer>
 </div>

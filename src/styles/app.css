@@ -766,6 +766,14 @@ details.identical[open] > summary::after { content: "▾ hide"; }
 }
 .foot-keys { color: var(--ink-3); }
 .foot-keys b { color: var(--ink-2); font-weight: 600; }
+.foot-legal {
+  color: var(--ink-3);
+  font-size: 0.72rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--rule-soft);
+  max-width: 72ch;
+}
+.foot-legal b { color: var(--ink-2); font-weight: 600; }
 
 /* screen-reader only */
 .sr-only {

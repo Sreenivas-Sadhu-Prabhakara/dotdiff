@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  /* dotdiff OG card — the twin-ledger identity, rendered as an artifact.
+     Two columns (A blue / B orange) facing across an amber "=" seam, real diff
+     rows carrying sign glyphs (+ − ~ =) so meaning survives without color.
+     Palette is lifted verbatim from src/styles/app.css. */
+  :root {
+    --paper:   #14181f;
+    --paper-2: #1a1f28;
+    --paper-3: #202634;
+    --seam:    #0d1015;
+    --rule:    #2b3342;
+    --ink:     #e6e9ef;
+    --ink-2:   #aab3c2;
+    --ink-3:   #6f7a8c;
+    --amber:   #f4b740;
+    --a-blue:     #5aa9e6;
+    --a-blue-bg:  #16283a;
+    --b-orange:   #f08a3c;
+    --b-orange-bg:#2e2114;
+    --change:     #c58cf0;
+    --change-bg:  #241a30;
+    --same:       #7f8ea3;
+    --mono: "SF Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background:
+      repeating-linear-gradient(to bottom, transparent 0, transparent 31px,
+        rgba(255,255,255,0.015) 31px, rgba(255,255,255,0.015) 32px),
+      var(--paper);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: stretch;
+  }
+
+  /* ---- left rail: the wordmark + one-line thesis + privacy seal ---- */
+  .rail {
+    padding: 74px 56px 64px 76px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+    border-right: 2px solid var(--rule);
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 96px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+  }
+  .brand .dot  { color: var(--amber); }
+  .brand .diff { color: var(--ink); }
+  .brand .eq {
+    margin-left: 14px;
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--paper);
+    background: linear-gradient(180deg, var(--a-blue) 0 50%, var(--b-orange) 50% 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    align-self: center;
+    padding-bottom: 6px;
+  }
+  .tag {
+    font-size: 33px;
+    line-height: 1.34;
+    color: var(--ink-2);
+    max-width: 15.5ch;
+    font-weight: 500;
+  }
+  .tag b { color: var(--ink); font-weight: 700; }
+  .tag .amber { color: var(--amber); }
+  .seal {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    font-size: 20px;
+    color: var(--ink-2);
+    padding: 12px 20px 12px 16px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--paper-2);
+    align-self: flex-start;
+  }
+  .seal code {
+    color: var(--amber);
+    background: var(--seam);
+    padding: 2px 9px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    font-size: 18px;
+  }
+  .seal-dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 0 4px rgba(244,183,64,0.16);
+  }
+
+  /* ---- right: the actual diff artifact ---- */
+  .ledger {
+    padding: 58px 52px 58px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .ledger-head {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 18px;
+    color: var(--ink-3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .col-a { color: var(--a-blue); }
+  .col-b { color: var(--b-orange); }
+  .row {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    gap: 14px;
+    font-size: 23px;
+    padding: 11px 18px;
+    border-radius: 4px;
+    border-left: 4px solid transparent;
+    background: var(--paper-2);
+    min-width: 0;
+  }
+  .row .sign {
+    font-weight: 700;
+    text-align: center;
+    font-size: 26px;
+  }
+  .row .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .k { color: var(--ink); }
+  .v { color: var(--ink-2); }
+
+  .row.add    { background: var(--b-orange-bg); border-left-color: var(--b-orange); }
+  .row.add    .sign, .row.add .k { color: var(--b-orange); }
+  .row.rem    { background: var(--a-blue-bg);  border-left-color: var(--a-blue); }
+  .row.rem    .sign, .row.rem .k { color: var(--a-blue); }
+  .row.chg    { background: var(--change-bg);  border-left-color: var(--change); }
+  .row.chg    .sign, .row.chg .k { color: var(--change); }
+  .row.eq     { background: var(--paper-2);    border-left-color: var(--rule); opacity: 0.72; }
+  .row.eq     .sign { color: var(--same); }
+  .row.eq     .k, .row.eq .v { color: var(--ink-3); }
+  .old { color: var(--a-blue); text-decoration: line-through; opacity: 0.8; }
+  .arr { color: var(--ink-3); padding: 0 6px; }
+  .new { color: var(--b-orange); }
+
+  .chips {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    font-size: 19px;
+  }
+  .chip {
+    padding: 8px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    color: var(--ink-2);
+  }
+  .chip b { font-variant-numeric: tabular-nums; }
+  .chip.a b { color: var(--a-blue); }
+  .chip.b b { color: var(--b-orange); }
+  .chip.c b { color: var(--change); }
+</style>
+</head>
+<body>
+  <div class="rail">
+    <div class="brand">
+      <span class="dot">dot</span><span class="diff">diff</span><span class="eq">A=B</span>
+    </div>
+    <div class="tag">
+      Compare two <b>.env</b> files and see the <span class="amber">real</span>
+      differences — order, whitespace and comments ignored.
+    </div>
+    <div class="seal">
+      <span class="seal-dot"></span>
+      <span>100% in-browser · <code>connect-src 'none'</code></span>
+    </div>
+  </div>
+
+  <div class="ledger">
+    <div class="ledger-head">
+      <span class="col-a">■ A .env.production</span>
+      <span style="color:var(--ink-3)">vs</span>
+      <span class="col-b">■ B .env.staging</span>
+    </div>
+
+    <div class="row rem">
+      <span class="sign">−</span>
+      <span class="txt"><span class="k">STRIPE_KEY</span></span>
+    </div>
+    <div class="row chg">
+      <span class="sign">~</span>
+      <span class="txt"><span class="k">NODE_ENV</span>=<span class="old">production</span><span class="arr">→</span><span class="new">staging</span></span>
+    </div>
+    <div class="row chg">
+      <span class="sign">~</span>
+      <span class="txt"><span class="k">PORT</span>=<span class="old">8080</span><span class="arr">→</span><span class="new">3000</span></span>
+    </div>
+    <div class="row add">
+      <span class="sign">+</span>
+      <span class="txt"><span class="k">SENTRY_DSN</span>=<span class="v">(empty)</span></span>
+    </div>
+    <div class="row eq">
+      <span class="sign">=</span>
+      <span class="txt"><span class="k">CACHE_TTL</span>=<span class="v">300</span></span>
+    </div>
+
+    <div class="chips">
+      <span class="chip a"><b>3</b> only in A</span>
+      <span class="chip b"><b>2</b> only in B</span>
+      <span class="chip c"><b>2</b> changed</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  /* dotdiff app icon — 512x512. Two facing bars (A blue / B orange) split by
+     an amber "=" seam: the same mark as favicon.svg, scaled up with a safe
+     margin so it survives maskable circle/squircle cropping (icon art stays
+     inside the central ~80% "safe zone"). Palette from src/styles/app.css. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 512px; height: 512px; }
+  body {
+    background: #14181f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* full-bleed tile so maskable crop always lands on brand color, never white */
+  .tile {
+    width: 512px; height: 512px;
+    background:
+      radial-gradient(120% 120% at 30% 20%, #1c222c 0%, #14181f 60%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mark {
+    /* the mark lives inside the maskable safe zone (~410px of 512) */
+    width: 300px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    column-gap: 40px;
+    position: relative;
+  }
+  .bar {
+    width: 78px;
+    height: 300px;
+    border-radius: 16px;
+  }
+  .bar-a { background: #5aa9e6; box-shadow: 0 0 0 1px rgba(90,169,230,0.4); }
+  .bar-b { background: #f08a3c; box-shadow: 0 0 0 1px rgba(240,138,60,0.4); }
+  /* the amber equals seam, centered between the bars */
+  .eq {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .eq span {
+    display: block;
+    width: 78px;
+    height: 34px;
+    border-radius: 17px;
+    background: #f4b740;
+  }
+</style>
+</head>
+<body>
+  <div class="tile">
+    <div class="mark">
+      <div class="bar bar-a"></div>
+      <div class="bar bar-b"></div>
+      <div class="eq"><span></span><span></span></div>
+    </div>
+  </div>
+</body>
+</html>
